@@ -1,19 +1,19 @@
-import '@testing-library/jest-dom';
+export const supabaseConfig = {
+  url: import.meta.env.VITE_SUPABASE_URL || '',
+  anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+};
 
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: (query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: () => undefined,
-    removeListener: () => undefined,
-    addEventListener: () => undefined,
-    removeEventListener: () => undefined,
-    dispatchEvent: () => false
-  })
-});
+export function hasSupabaseConfig(): boolean {
+  return Boolean(supabaseConfig.url && supabaseConfig.anonKey);
+}
 
-if (!('structuredClone' in globalThis)) {
-  (globalThis as any).structuredClone = (value: any) => JSON.parse(JSON.stringify(value));
+export function getSupabaseStatusMessage(): string {
+  if (!hasSupabaseConfig()) {
+    return 'Supabase not configured. Local-only mode is active.';
+  }
+  return 'Supabase configuration detected. Cloud sync is ready to connect.';
+}
+
+export function createSupabaseClient() {
+  return null;
 }

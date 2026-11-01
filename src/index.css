@@ -1,10 +1,52 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './index.css';
+import type { FriendRecord, FriendRequest, LocalData, Profile, Session, Settings, Solve } from '../types';
+import { defaultProfile, defaultSessions, defaultSettings, STORAGE_KEY, safeReadStorage, safeWriteStorage } from './scramble';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+export const initialData: LocalData = {
+  profile: defaultProfile,
+  settings: { ...defaultSettings },
+  sessions: [...defaultSessions],
+  solves: [],
+  friendRequests: [],
+  friends: []
+};
+
+export function loadData(): LocalData {
+  const raw = safeReadStorage<Partial<LocalData>>(STORAGE_KEY, initialData);
+  return {
+    profile: { ...initialData.profile, ...raw.profile },
+    settings: { ...initialData.settings, ...raw.settings },
+    sessions: Array.isArray(raw.sessions) && raw.sessions.length ? raw.sessions : [...defaultSessions],
+    solves: Array.isArray(raw.solves) ? raw.solves : [],
+    friendRequests: Array.isArray(raw.friendRequests) ? raw.friendRequests : [],
+    friends: Array.isArray(raw.friends) ? raw.friends : []
+  };
+}
+
+export function saveData(data: LocalData): void {
+  safeWriteStorage(STORAGE_KEY, data);
+}
+
+export function updateSettings(next: Settings): void {
+  const current = loadData();
+  saveData({ ...current, settings: next });
+}
+
+export function updateProfile(next: Profile): void {
+  const current = loadData();
+  saveData({ ...current, profile: next });
+}
+
+export function updateSessions(next: Session[]): void {
+  const current = loadData();
+  saveData({ ...current, sessions: next });
+}
+
+export function addSolve(solve: Solve): void {
+  const current = loadData();
+  saveData({ ...current, solves: [solve, ...current.solves] });
+}
+
+export function updateFriends(nextFriends: FriendRecord[], nextRequests: FriendRequest[] = []): void {
+  const current = loadData();
+  saveData({ ...current, friends: nextFriends, friendRequests: nextRequests });
+}

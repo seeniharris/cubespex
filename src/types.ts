@@ -1,106 +1,96 @@
-export type EventId =
-  | '222'
-  | '333'
-  | '444'
-  | '555'
-  | '666'
-  | '777'
-  | '333bf'
-  | '333oh'
-  | 'clock'
-  | 'minx'
-  | 'pyram'
-  | 'skewb'
-  | 'sq1'
-  | '333fm';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-export type Penalty = 'none' | '+2' | 'DNF';
-export type Theme = 'dark' | 'light';
-export type TimerMode = 'idle' | 'holding' | 'ready' | 'running' | 'inspection' | 'stopped';
-export type TabId = 'timer' | 'statistics' | 'leaderboards' | 'friends' | 'profile' | 'settings';
-
-export interface Settings {
-  theme: Theme;
-  inspection: boolean;
-  inspectionWarnings: boolean;
-  holdDelayMs: number;
-  soundEnabled: boolean;
-  volume: number;
-  keyboardEnabled: boolean;
-  mobileControls: boolean;
-  displayPrecision: 'hundredths' | 'tenths';
+:root {
+  color-scheme: dark;
+  font-family: Inter, 'Segoe UI', sans-serif;
+  background: #0c1116;
+  color: #f3f4f6;
 }
 
-export interface Session {
-  id: string;
-  name: string;
-  event: EventId;
+html, body, #root {
+  margin: 0;
+  min-height: 100%;
+  min-width: 0;
+  background: #0c1116;
 }
 
-export interface Solve {
-  id: string;
-  event: EventId;
-  sessionId: string;
-  scramble: string;
-  rawTimeMs: number;
-  penalty: Penalty;
-  finalResultMs: number | null;
-  createdAt: string;
-  status: 'ok' | 'manual' | 'deleted';
+body {
+  min-height: 100vh;
 }
 
-export interface Profile {
-  id: string;
-  displayName: string;
-  username: string;
-  friendCode: string;
-  avatarUrl: string;
-  bio: string;
-  createdAt: string;
-  privacy: {
-    profilePublic: boolean;
-    statsPublic: boolean;
-    friendRequests: 'everyone' | 'friends' | 'off';
-    leaderboardVisible: boolean;
-  };
+* {
+  box-sizing: border-box;
 }
 
-export interface FriendRequest {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  status: 'pending' | 'accepted' | 'declined';
-  createdAt: string;
+button, select, input, textarea {
+  font: inherit;
 }
 
-export interface FriendRecord {
-  id: string;
-  friendId: string;
-  createdAt: string;
+.card {
+  @apply rounded-2xl border border-slate-700 bg-slate-900/80 shadow-soft;
 }
 
-export interface LocalData {
-  profile: Profile;
-  settings: Settings;
-  sessions: Session[];
-  solves: Solve[];
-  friendRequests: FriendRequest[];
-  friends: FriendRecord[];
+.panel-button {
+  @apply rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 transition hover:border-lime-400 hover:text-lime-300;
 }
 
-export const EVENT_OPTIONS: Array<{ id: EventId; label: string }> = [
-  { id: '222', label: '2x2' },
-  { id: '333', label: '3x3' },
-  { id: '444', label: '4x4' },
-  { id: '555', label: '5x5' },
-  { id: '666', label: '6x6' },
-  { id: '777', label: '7x7' },
-  { id: '333bf', label: '3x3 Blindfolded' },
-  { id: '333oh', label: '3x3 One-Handed' },
-  { id: 'clock', label: 'Clock' },
-  { id: 'minx', label: 'Megaminx' },
-  { id: 'pyram', label: 'Pyraminx' },
-  { id: 'skewb', label: 'Skewb' },
-  { id: 'sq1', label: 'Square-1' },
-  { id: '333fm', label: 'Fewest Moves Challenge' }
-];
+.grid-panel {
+  @apply grid gap-4 md:grid-cols-2 xl:grid-cols-3;
+}
+
+.theme-light {
+  --bg: #f4f7f8;
+  --panel: #ffffff;
+  --panel-alt: #edf2f4;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #dbe4ea;
+}
+
+.theme-dark {
+  --bg: #0c1116;
+  --panel: #111827;
+  --panel-alt: #1f2937;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --border: #233141;
+}
+
+.app-shell {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.main-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+.secondary-panel {
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.timer-display {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.stat-card {
+  @apply rounded-2xl border border-slate-700 p-4;
+  background: rgba(15, 23, 42, 0.92);
+}
+
+@media (max-width: 640px) {
+  .timer-display {
+    font-size: clamp(2.6rem, 12vw, 5.5rem);
+  }
+}
